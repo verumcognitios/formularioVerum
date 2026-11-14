@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>…</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --vazio:#03050a; --nevoa:#0d1a20; --osso:#c9cfcb; --palido:#7f8b8c; --brasa:#8d9496;
+    --serif:'Cormorant Garamond','Iowan Old Style',Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%;background:var(--vazio);color:var(--osso);font-family:var(--serif);overflow:hidden}
+  #fundo{position:fixed;inset:0;width:100%;height:100%;display:block;
+    background:radial-gradient(ellipse at 50% 40%,var(--nevoa),var(--vazio) 70%)}
+  main{position:relative;z-index:1;height:100%;display:grid;place-items:center;padding:2rem}
+  .palco{width:min(34rem,100%);text-align:center;transition:opacity 1.1s ease,filter 1.1s ease,transform 1.4s ease}
+  .palco.some{opacity:0;filter:blur(14px);transform:translateY(-10px) scale(1.02)}
+  .sussurro{font-size:1rem;font-style:italic;font-weight:300;letter-spacing:.14em;color:var(--palido);margin-bottom:2.2rem}
+  h1{font-weight:300;font-style:italic;font-size:clamp(1.6rem,4.6vw,2.3rem);line-height:1.35;letter-spacing:.01em;text-wrap:balance}
+  .w{display:inline-block;animation:surge 1.6s cubic-bezier(.2,.6,.2,1) backwards}
+  @keyframes surge{from{opacity:0;filter:blur(10px);transform:translateY(6px)}}
+  form{margin-top:3rem;animation:surge 1.8s ease backwards;animation-delay:var(--atraso,2.4s)}
+  input,textarea{resize:none;overflow:hidden;display:block;width:100%;background:transparent;border:0;border-bottom:1px solid color-mix(in srgb,var(--osso) 28%,transparent);
+    color:var(--osso);font:italic 300 1.5rem var(--serif);text-align:center;padding:.6rem .5rem;
+    outline:none;caret-color:var(--brasa);transition:border-color .8s,box-shadow .8s}
+  input::placeholder,textarea::placeholder{color:color-mix(in srgb,var(--palido) 60%,transparent)}
+  input:focus,textarea:focus{border-color:var(--brasa);box-shadow:0 12px 24px -18px var(--brasa)}
+  button{margin-top:2rem;background:none;border:0;color:var(--palido);font:italic 400 1.1rem var(--serif);
+    letter-spacing:.12em;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 1s,color .6s,letter-spacing .8s;padding:.4rem 1rem}
+  button.pronto{opacity:1;pointer-events:auto}
+  button:hover,button:focus-visible{color:var(--osso);letter-spacing:.2em;outline:none}
+  .rodape{position:fixed;bottom:1.4rem;left:0;right:0;z-index:1;text-align:center;font-size:.85rem;
+    font-style:italic;color:var(--palido);opacity:.65;letter-spacing:.1em}
+  /* Realidade: clara, nítida, firme (texto reto, sem itálico) */
+  body[data-e="realidade"]{--osso:#202226;--palido:#6c6f74;--brasa:#9a9aa3}
+  body[data-e="realidade"] h1,body[data-e="realidade"] .sussurro{font-style:normal;letter-spacing:.03em}
+  body[data-e="realidade"] #fundo{background:radial-gradient(ellipse at 50% 40%,#fff,#cdcdd0 80%)}
+  /* Eva: mescla dos dois (palavras alternando reto/itálico; sombra escura garante leitura sobre a luz) */
+  body[data-e="eva"]{--osso:#f1f1f1;--palido:#b0b0b4;--brasa:#a8a8ad}
+  body[data-e="eva"] h1,body[data-e="eva"] .sussurro,body[data-e="eva"] input,body[data-e="eva"] textarea,body[data-e="eva"] button,body[data-e="eva"] .rodape{text-shadow:0 0 12px #03050a,0 0 32px rgba(3,5,10,.85)}
+  body[data-e="eva"] .w:nth-child(even){font-style:normal;letter-spacing:.05em}
+  body[data-e="eva"] .w:nth-child(3n){font-weight:400}
+  body[data-e="eva"] #fundo{background:linear-gradient(115deg,#03050a 20%,#e6e6e8 50%,#03050a 80%)}
+  /* botão de seguir: duas setas discretas */
+  button.seguir{display:block;margin:3.2rem auto 0;padding:.8rem 1.2rem;color:var(--palido);opacity:1;pointer-events:none;animation:surge 1.8s ease backwards;animation-delay:var(--atraso)}
+  button.seguir svg{display:block;transform:rotate(90deg);transition:transform .6s;animation:pulso 3.2s ease-in-out infinite}
+  button.seguir.vivo{pointer-events:auto}
+  button.seguir:hover,button.seguir:focus-visible{color:var(--osso);outline:none}
+  button.seguir:hover svg,button.seguir:focus-visible svg{transform:rotate(90deg) translateX(5px)}
+  @keyframes pulso{50%{opacity:.3}}
+  .palco.lento{transition-duration:3.5s}
+  body[data-e="eva"] button.seguir svg{filter:drop-shadow(0 0 3px #03050a) drop-shadow(0 0 8px #03050a)}  /* seta legível sobre as áreas claras */
+  body.gl #fundo{animation:glj .24s steps(1,end)}
+  body.gl .palco{animation:glp .24s steps(1,end)}
+  @keyframes glj{0%{transform:translateX(7px);filter:invert(.35) contrast(1.3)}40%{transform:translateX(-5px);filter:invert(.25)}70%{transform:translateX(2px);filter:none}100%{transform:none;filter:none}}
+  @keyframes glp{0%{transform:translate(-4px,0);text-shadow:3px 0 rgba(255,255,255,.85),-3px 0 rgba(110,110,110,.8)}50%{transform:translate(3px,1px);clip-path:inset(30% 0 35% 0)}100%{transform:none;clip-path:none}}
+  #negro{position:fixed;inset:0;z-index:6;background:#000;opacity:0;pointer-events:none;transition:opacity 3.5s ease;display:grid;place-items:center}
+  #negro.on{opacity:1}
+  #olho{font:300 clamp(4rem,14vw,8rem)/1 'Segoe UI Symbol','Noto Sans Symbols 2','Apple Symbols',sans-serif;color:#cfd3d6;
+    filter:grayscale(1);opacity:0;transition:opacity 4s ease;text-shadow:0 0 30px rgba(220,225,230,.35)}
+  #negro.on{pointer-events:auto}
+  #olho{margin:0;padding:0}
+  #olho.on{opacity:.9;pointer-events:auto;cursor:pointer}
+  #olho.on:hover,#olho.on:focus-visible{opacity:1;outline:none;text-shadow:0 0 44px rgba(240,244,248,.65)}
+  button#som{position:fixed;right:1rem;bottom:1rem;z-index:5;opacity:.45;pointer-events:auto;font-size:.95rem;padding:.4rem .6rem;margin:0}
+  button#som:hover{opacity:.9}
+  #cine{position:fixed;inset:0;z-index:8;background:#000;visibility:hidden;opacity:0;transition:opacity 1.5s,visibility 0s 1.5s}
+  #cine.on{visibility:visible;opacity:1;transition:opacity 1.5s}
+  #cine video{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+  button#pular{position:fixed;right:1.2rem;bottom:1.2rem;z-index:9;opacity:.4;pointer-events:auto;margin:0;color:#cfd3d6}
+  button#pular:hover{opacity:.9}
+  @media (prefers-reduced-motion:reduce){.w,form,button.seguir{animation-duration:.01s;animation-delay:0s}.palco{transition-duration:.01s}}
+</style>
+</head>
+<body>
+<canvas id="fundo" aria-hidden="true"></canvas>
+<main><div class="palco" id="palco" aria-live="polite"></div></main>
+<div id="negro"><button type="button" id="olho" aria-label="assistir aos teasers">&#128065;&#65038;</button></div>
+<div id="cine"><button type="button" id="pular">pular</button></div>
+<button type="button" id="som" style="display:none">som</button>
+<div class="rodape">o outro lado está atento</div>
+
+<script>
+/* ---------- FUNDO: névoa do Vazio (WebGL, sem bibliotecas) ---------- */
+(() => {
+  const cv = document.getElementById('fundo');
+  const gl = cv.getContext('webgl', {antialias:false});
+  if (!gl) return; // sem WebGL: fica o gradiente CSS
+  const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  const fs = `precision highp float;
+  uniform vec2 r;uniform float t;uniform vec2 m;uniform float k;uniform float e;
+  float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+    return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+  float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<5;i++){s+=a*n(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return s;}
+  void main(){
+    vec2 uv=(gl_FragCoord.xy-.5*r)/r.y; uv+=m*.05;
+    vec2 p=uv*1.7; float T=t*.035;
+    vec2 q=vec2(fbm(p+T),fbm(p+vec2(5.2,1.3)-T));
+    vec2 w=vec2(fbm(p+3.*q+vec2(1.7,9.2)+T*1.5),fbm(p+3.*q+vec2(8.3,2.8)-T));
+    float f=fbm(p+3.*w);
+    vec3 c=mix(vec3(.008,.011,.02),vec3(.045,.085,.10),smoothstep(.2,.85,f));
+    c=mix(c,vec3(.13,.07,.17),smoothstep(.5,1.1,length(q))*.35);
+    c+=vec3(.05,.08,.09)*pow(f,4.)*1.4;
+    float v=smoothstep(1.15,.15,length(uv)); vec3 d=c*(.2+.95*v);
+    vec3 l=mix(vec3(.74,.75,.77),vec3(.99,.99,.985),smoothstep(.2,.85,f));
+    l+=vec3(.04)*pow(f,3.); l*=.86+.14*v;
+    float s=sin(f*11.-t*.22+length(q)*6.);
+    vec3 dg=vec3(dot(d,vec3(.3,.5,.2)))*1.1;   // escuro em tom de cinza puro
+    vec3 ev=mix(dg*.8,l,smoothstep(-.12,.12,s));
+    ev+=vec3(.5)*exp(-abs(s)*9.)*.35;
+    float wv=fbm(p*1.4+q*2.2+vec2(T*2.,-T));     // fios prateados seguem as curvas da névoa
+    float rg=1.-abs(2.*wv-1.);
+    float hw=.012+.055*k;                                                  // fios finos que engrossam aos poucos
+    float vm=smoothstep(1.-hw-.03,1.-hw+.03,rg)*smoothstep(0.,.12,k);
+    float fm=smoothstep(0.,.6,(k-.55)*2.+(wv-.5)*.6);                    // depois a luz inunda
+    c=mix(mix(d,l,max(vm,fm)),ev,e);
+    c+=(h(gl_FragCoord.xy)-.5)*.006;
+    gl_FragColor=vec4(c,1.);
+  }`;
+  const mk=(type,src)=>{const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;};
+  const pr=gl.createProgram();
+  gl.attachShader(pr,mk(gl.VERTEX_SHADER,vs));gl.attachShader(pr,mk(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(pr);gl.useProgram(pr);
+  gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  const U=k=>gl.getUniformLocation(pr,k);
+  const escala=.6; // renderiza em resolução menor: mais leve e a névoa fica mais macia
+  const ajusta=()=>{cv.width=innerWidth*escala;cv.height=innerHeight*escala;gl.viewport(0,0,cv.width,cv.height);};
+  addEventListener('resize',ajusta);ajusta();
+  let mx=0,my=0,sx=0,sy=0;
+  addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=.5-e.clientY/innerHeight;});
+  const calmo=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let ck=0,ce=0;const alvo={k:0,e:0,d:0,k0:0,e0:0,t:0};
+  // d = duração em segundos (linear e suave); sem d, aproxima-se de forma exponencial como antes
+  window.setFundo=(k,e,d)=>{ if(k===alvo.k&&e===alvo.e) return; Object.assign(alvo,{k,e,d:d||0,k0:ck,e0:ce,t:performance.now()}); };
+  const passoFundo=()=>{
+    if(alvo.d){ const u=Math.min(1,(performance.now()-alvo.t)/1000/alvo.d), z=u*u*(3-2*u); ck=alvo.k0+(alvo.k-alvo.k0)*z; ce=alvo.e0+(alvo.e-alvo.e0)*z; }
+    else { ck+=(alvo.k-ck)*.02; ce+=(alvo.e-ce)*.02; }
+  };
+  const t0=performance.now();
+  (function quadro(){
+    sx+=(mx-sx)*.03;sy+=(my-sy)*.03; // a câmera "paira" em direção ao cursor
+    const t=calmo?10:(performance.now()-t0)/1000;
+    passoFundo();gl.uniform1f(U('k'),ck);gl.uniform1f(U('e'),ce);
+    gl.uniform2f(U('r'),cv.width,cv.height);gl.uniform1f(U('t'),t);gl.uniform2f(U('m'),sx,sy);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+    requestAnimationFrame(quadro);
+  })();
+})();
+
+/* ---------- FORMULÁRIO: edite/adicione perguntas aqui ---------- */
+/*
+  Cada item de `etapas` é uma tela. Campos:
+    entidade : 'vazio' | 'realidade' | 'eva'  (muda fundo, cores e o jeito do texto)
+    sussurro : linha pequena acima da pergunta (bom lugar para a entidade se apresentar)
+    pergunta : texto principal. Use @chave para inserir uma resposta anterior (ex.: @nome). Prefira @nome: respostas livres podem ficar estranhas no meio de uma frase
+    chave    : nome da resposta (ex.: 'nome'). Sem chave = tela só de texto, sem campo
+    dica     : placeholder do campo
+    auto     : só para telas sem chave. Elas já mostram o botão de seguir; auto:5000 (ms) faz avançar sozinha
+    transicao: segundos (ex.: 12) na ÚLTIMA tela de uma entidade: a próxima entra tecendo devagar, sem corte
+  A última tela do array é o fim do formulário.
+
+  COMO ADICIONAR PERGUNTAS: copie um modelo, troque os textos e cole na ordem desejada no array.
+  Para a entidade mudar, coloque antes uma tela com `auto:true` dela se apresentando.
+  Mantenha as perguntas seguidas da mesma entidade juntas, para o fundo não ficar alternando.
+
+  Modelo Vazio:      { entidade:'vazio',     chave:'minha_chave', sussurro:'…', pergunta:'…', dica:'…' },
+  Modelo Realidade:  { entidade:'realidade', chave:'minha_chave', sussurro:'…', pergunta:'…', dica:'…' },
+  Modelo Eva:        { entidade:'eva',       chave:'minha_chave', sussurro:'…', pergunta:'…', dica:'…' },
+*/
+const respostas = {};
+
+/* ---------- ARQUIVOS DE MÍDIA: coloque na mesma pasta do index.html (ou use uma URL completa) ---------- */
+const MUSICAS = { vazio:'vazio.mp3', eva:'eva.mp3' };    // uma faixa por entidade, em loop
+const R2 = 'https://pub-2b20073db4c54ecfbaffc725d186f798.r2.dev';          // ex.: https://pub-xxxxxxxx.r2.dev  (sem barra no fim)
+const TEASERS = [R2+'/videos/teaserLivrodeRegras.mp4', R2+'/videos/TeaserAQueda.mp4'];           // tocam em sequência quando o olho é clicado
+const VOL_MAX = .5;                                       // volume da música (0 a 1)
+const rodapes = { vazio:'o outro lado está atento', realidade:'tudo o que existe está sendo medido', eva:'somos muitos' }; // frases de exemplo
+const fundos = { vazio:[0,0], realidade:[1,0], eva:[0,1] }; // [claridade, mistura viva]
+const etapas = [
+  // ===== O VAZIO =====
+  { entidade:'vazio', pergunta:'Há mais entre os ecos do Nada do que qualquer existência perene jamais será capaz de proporcionar.' },
+  { entidade:'vazio', pergunta:'Tudo aquilo que é torna a não ser.' },
+  { entidade:'vazio', pergunta:'Pois é no vácuo infindo daquilo que não existe que a ordem retoma seu verdadeiro lugar.' },
+  { entidade:'vazio', pergunta:'Cada regra…' },
+  { entidade:'vazio', pergunta:'Cada sofrimento…' },
+  { entidade:'vazio', pergunta:'Cada morte…' },
+  { entidade:'vazio', pergunta:'Não mais serão, por assim serem, perante a plenitude do eterno silêncio.' },
+  { entidade:'vazio', chave:'nome', pergunta:'Diga, Existente, quem é você?', dica:'…' },
+  { entidade:'vazio', pergunta:'@nome… um som breve. Um mero ruído perto da quietude perfeita.' },
+  { entidade:'vazio', pergunta:'Todo aquele que persiste como uma falha não prevista no diagrama da existência carrega, em sua insignificância inócua, um temor muito mais antigo do que sua intrínseca parvidade…' },
+  { entidade:'vazio', chave:'temor', pergunta:'Diga, @nome. Porque temes o Nada?', dica:'…' },
+  { entidade:'vazio', pergunta:'Intrigante…' },
+  { entidade:'vazio', pergunta:'Observaste inerte sua própria Queda…' },
+  { entidade:'vazio', pergunta:'Choráveis por astros que já não mais centelham em escuro firmamento…' },
+  { entidade:'vazio', pergunta:'Presenciara a dor, o sofrimento, tristeza, miséria… perda.' },
+  { entidade:'vazio', chave:'permanencia', pergunta:'Porque, então, @nome, recusas o acalento da calmaria, da ordem primordial? Porque foges daquilo que sempre esteve à tua espera? O verdadeiro propósito da humanidade.', dica:'…' },
+  { entidade:'vazio', chave:'mundo', pergunta:'Afinal… esse mundo torpe, essa Realidade despedaçada lhe basta? Ou algo em ti clamas pela perfeita finitude? Há um pedaço em sua insignificância consciente que anseie o fim desse sofrimento eterno?', dica:'…' },
+  { entidade:'vazio', pergunta:'Entenda, @nome. Aquilo que existe nada mais é do que um eco persistente na lógica perfeita. Uma memória falha que urge ser lembrada.' },
+  { entidade:'vazio', pergunta:'E memórias são a recusa do passado em findar a si próprio.' },
+  { entidade:'vazio', chave:'lembranca', pergunta:'Reflita, @nome. Durante toda sua trajetória, qual é a lembrança que já deveria ter chegado ao fim? O que desejas entregar ao silêncio para que nunca mais seja dito? Para que nunca mais seja doído, para que nunca mais seja sentido…', dica:'…' },
+  { entidade:'vazio', pergunta:'Veja, @nome, já estiveste, durante sua vida, mais perto da plenitude do que imaginas…' },
+  { entidade:'vazio', pergunta:'Em seu silêncio…' },
+  { entidade:'vazio', pergunta:'Nos dias que sentes que deixaste de existir…' },
+  { entidade:'vazio', pergunta:'Nos vazios das perdas…' },
+  { entidade:'vazio', pergunta:'Já vistes o abismo de forma mais clara do que nunca compreenderás.' },
+  { entidade:'vazio', pergunta:'E até mesmo quando escolher não olhar… ele estará lhe observando de volta.' },
+  { entidade:'vazio', transicao:12, glitches:[3,6.5,9,10.5], pergunta:'O silêncio sempre esteve à tua espera, @nome. Ainda podes escolher aceitá-lo.' },   // ← depois desta: Eva toma o fundo devagar (12 s), com glitches leves
+
+  // ===== EVA =====
+  { entidade:'eva', pergunta:'Nós…' },
+  { entidade:'eva', pergunta:'Nós ainda nos lembramos.' },
+  { entidade:'eva', pergunta:'Ainda nos lembramos de um mundo que já não existe.' },
+  { entidade:'eva', pergunta:'Cada momento…' },
+  { entidade:'eva', pergunta:'Cada memória…' },
+  { entidade:'eva', pergunta:'Cada vivência perdida….' },
+  { entidade:'eva', pergunta:'Cada vida mudada pela Queda.' },
+  { entidade:'eva', pergunta:'Nós falhamos.' },
+  { entidade:'eva', pergunta:'E o mundo ruiu por nossas próprias falhas.' },
+  { entidade:'eva', pergunta:'A culpa é a memória de uma forma perdida.' },
+  { entidade:'eva', pergunta:'@nome…' },
+  { entidade:'eva', pergunta:'Já nos conhecemos antes.' },
+  { entidade:'eva', pergunta:'Fosse em sonho esquecido, em visão que não compreendeste, acima de um monte saudando um dos monólitos…' },
+  { entidade:'eva', pergunta:'Somos muitos. Falamos por quem sonhou com este nome antes de ouvi-lo, e por quem ainda sonhará.' },
+  { entidade:'eva', pergunta:'Sentimos assim como você. A vida que lhe foi arrancada sem aviso; o vento frio do léu onde foste deixado para sobreviver.' },
+  { entidade:'eva', pergunta:'Conhecemos a sua dor. E também a sua persistência.' },
+  { entidade:'eva', pergunta:'Conhecemos o peso de continuar quando tudo aquilo que justificava a caminhada já não existe.' },
+  { entidade:'eva', pergunta:'Conhecemos os rostos que procuramos entre os mortos. As vozes que ainda esperamos ouvir. As promessas que fizemos sem saber que não teríamos tempo para cumpri-las.' },
+  { entidade:'eva', chave:'esperanca', pergunta:'Mas para você, @nome, diga-nos, o que lhe faz seguir em frente?', dica:'…' },
+  { entidade:'eva', pergunta:'Houve um tempo em que acreditávamos que proteger o mundo seria suficiente.' },
+  { entidade:'eva', pergunta:'Estávamos errados.' },
+  { entidade:'eva', chave:'correcao', pergunta:'@nome… se pudesse desfazer uma única coisa que aconteceu, se pudesse arrancar uma falha da história antes que ela produzisse suas consequências… o que escolheria corrigir?', dica:'…' },
+  { entidade:'eva', pergunta:'Fascinante.' },
+  { entidade:'eva', pergunta:'Nós também fizemos essa pergunta.' },
+  { entidade:'eva', pergunta:'E, quando finalmente encontramos uma resposta, o mundo já não permitia mais que ela fosse dita.' },
+  { entidade:'eva', pergunta:'Disseram-nos que certas coisas não podem ser desfeitas. Que o passado deve permanecer intocado. Que precisamos aprender a carregar aquilo que não podemos mudar.' },
+  { entidade:'eva', pergunta:'Mas quem decidiu isso, @nome? Quem decretou que as cicatrizes da existência são mais sagradas do que aquilo que existia antes delas?' },
+  { entidade:'eva', pergunta:'Nós vimos o que acontece quando tentamos preservar um mundo que já não pode sustentar a si próprio.' },
+  { entidade:'eva', pergunta:'E compreendemos: não basta remendar aquilo que nasceu quebrado.' },
+  { entidade:'eva', pergunta:'Precisamos ir além do reparo.' },
+  { entidade:'eva', pergunta:'O ontem nos trouxe até aqui. Mas não precisa determinar aquilo que seremos.' },
+  { entidade:'eva', pergunta:'Venha conosco, @nome.' },
+  { entidade:'eva', pergunta:'Em direção à verdadeira ascenção.' },
+  { entidade:'eva', pergunta:'A sagrada subida em direção à Apoteose.' },
+  { entidade:'eva', pergunta:'Não mais para retornar ao que perdemos.' },
+  { entidade:'eva', pergunta:'Mas para reconstruir aquilo que jamais deveria ter sido perdido.' },
+  { entidade:'eva', pergunta:'Nós nos lembraremos do que fomos. Corrigiremos aquilo que somos. E juntos decidiremos o que seremos.' },
+  { entidade:'eva', pergunta:'Durma, @nome...' },
+  { entidade:'eva', pergunta:'Pois nós sonharemos com você.' },
+  { entidade:'eva', pergunta:'Não há ontem. Não há hoje.' },
+  { entidade:'eva', pergunta:'Há somente o novo amanhã.' },
+  { entidade:'eva', olho:true, pergunta:'Deificatio.' }   // ← depois dela: fade para preto e o olho
+];
+
+
+const palco = document.getElementById('palco');
+const reduz = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const SETAS = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5l6 7-6 7"/><path d="M13 5l6 7-6 7"/></svg>';
+const esc = s => s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const palavras = (s,d=0,passo=.2)=>esc(s).split(' ').map((w,i)=>`<span class="w" style="animation-delay:${(d+i*passo).toFixed(2)}s">${w}</span>`).join(' ');
+const fundoDe = (ent,d) => { if(ent!==desejada) musica(ent,d||2); return window.setFundo && setFundo(...fundos[ent||'vazio'], d); };
+
+/* ---------- Música: começa no primeiro clique/tecla (os navegadores exigem) ---------- */
+let desejada=null, fadeSeg=2, comecou=false, mudo=false;
+const faixas={}, vs={};
+function musica(ent,seg){ desejada=ent; fadeSeg=seg||2; }   // só define o alvo; passoMusica faz o fade
+function iniciaMusica(){
+  if(comecou) return; comecou=true;
+  for(const k in MUSICAS){ const a=new Audio(MUSICAS[k]); a.loop=true; a.preload='auto'; a.volume=0; faixas[k]=a; vs[k]=0; }
+  const b=document.getElementById('som'); b.style.display='block';
+  b.onclick=()=>{ mudo=!mudo; for(const k in faixas) faixas[k].muted=mudo; b.textContent=mudo?'mudo':'som'; };
+  setInterval(()=>{
+    for(const k in faixas){
+      const a=faixas[k], alvo=(k===desejada)?VOL_MAX:0, d=VOL_MAX/(fadeSeg*20);
+      vs[k]=vs[k]<alvo ? Math.min(alvo,vs[k]+d) : Math.max(alvo,vs[k]-d);
+      a.volume=vs[k];
+      if(alvo>0 && a.paused) a.play().catch(()=>{});
+      if(alvo===0 && vs[k]===0 && !a.paused) a.pause();
+    }
+  },50);
+}
+addEventListener('pointerdown',iniciaMusica,{once:true});
+addEventListener('keydown',iniciaMusica,{once:true});
+
+/* ---------- Teasers: o olho vira botão e toca os vídeos em sequência ---------- */
+let vids=null;
+function preparaTeasers(){ if(vids) return;
+  vids=TEASERS.map((u,i)=>{ const v=document.createElement('video'); v.src=u; v.preload=i?'none':'auto'; v.playsInline=true; return v; }); }
+function abreCine(){
+  const c=document.getElementById('cine'); preparaTeasers(); let n=0;
+  const fecha=()=>{ c.classList.remove('on'); c.querySelectorAll('video').forEach(x=>{ x.pause(); x.remove(); }); };
+  const toca=()=>{
+    if(n>=vids.length) return fecha();
+    const v=vids[n]; c.querySelectorAll('video').forEach(x=>x.remove()); c.prepend(v);
+    v.currentTime=0; v.onended=v.onerror=()=>{ n++; toca(); };
+    if(vids[n+1]) vids[n+1].preload='auto';          // já vai baixando o próximo
+    v.play().catch(()=>{});
+  };
+  document.getElementById('pular').onclick=()=>{ vids[n].pause(); n++; toca(); };
+  c.onclick=ev=>{ if(ev.target.tagName==='VIDEO') ev.target.paused ? ev.target.play() : ev.target.pause(); };
+  c.classList.add('on'); toca();
+}
+document.getElementById('olho').addEventListener('click',abreCine);
+
+function mostra(i){
+  const e = etapas[i], ent = e.entidade||'vazio';
+  document.body.dataset.e = ent;
+  document.querySelector('.rodape').textContent = rodapes[ent];
+  fundoDe(ent);
+  const bruto = typeof e.pergunta==='function' ? e.pergunta(respostas) : e.pergunta;
+  const texto = bruto.replace(/@(\w+)/g,(m,k)=>respostas[k]||m);
+  const nPal = texto.split(' ').length;
+  const passo = Math.min(.2, 5/nPal), atraso = 1.2 + nPal*passo + .4; // frases longas emergem mais rápido // o campo só surge depois da pergunta emergir
+  palco.innerHTML =
+    (e.sussurro ? `<p class="sussurro">${palavras(e.sussurro,0,.35)}</p>` : '') + `<h1>${palavras(texto,1.2,passo)}</h1>` +
+    (e.chave ?
+    `<form autocomplete="off" style="--atraso:${atraso}s">
+       <label for="campo" style="position:absolute;left:-9999px">${esc(texto)}</label>
+       <textarea id="campo" name="${e.chave}" rows="1" maxlength="400" placeholder="${esc(e.dica||'')}" spellcheck="false"></textarea>
+       <button type="submit">responder</button>
+     </form>` : (etapas[i+1] ? `<button type="button" class="seguir" aria-label="continuar" style="--atraso:${atraso}s">${SETAS}</button>` : ''));
+  palco.classList.remove('some','lento');
+  if (!e.chave){
+    const b=palco.querySelector('.seguir');
+    if (b){ setTimeout(()=>b.classList.add('vivo'),atraso*1000);
+      b.addEventListener('click',()=>{ if(!b.dataset.ok){ b.dataset.ok=1; avanca(i); } }); }
+    if (typeof e.auto==='number') setTimeout(()=>avanca(i), e.auto);
+    if (e.olho) setTimeout(()=>{ document.getElementById('negro').classList.add('on'); musica(null,4); preparaTeasers(); if(window.salvarResposta) salvarResposta('_fim','concluiu',respostas.nome||'?',etapas.length);   // fade para preto…
+      setTimeout(()=>document.getElementById('olho').classList.add('on'),3800); },atraso*1000+3500); // …e o olho se abre
+    return;
+  }
+  const campo=palco.querySelector('textarea'), botao=palco.querySelector('button');
+  setTimeout(()=>campo.focus({preventScroll:true}), atraso*1000+300);
+  campo.addEventListener('input',()=>{
+    campo.style.height='auto'; campo.style.height=campo.scrollHeight+'px'; // cresce junto com o texto
+    botao.classList.toggle('pronto',campo.value.trim().length>0);
+  });
+  campo.addEventListener('keydown',ev=>{ // Enter envia; Shift+Enter quebra linha
+    if(ev.key==='Enter' && !ev.shiftKey){ ev.preventDefault(); enviar(); }
+  });
+  let enviado=false;
+  const enviar=()=>{ const v=campo.value.trim(); if(!v||enviado) return; enviado=true; respostas[e.chave]=v; if(window.salvarResposta) salvarResposta(e.chave,v,respostas.nome,i); avanca(i); };
+  botao.addEventListener('click',ev=>{ ev.preventDefault(); enviar(); });
+  palco.querySelector('form').addEventListener('submit',ev=>{ ev.preventDefault(); enviar(); });
+}
+function avanca(i){
+  const prox = etapas[i+1]; if(!prox) return;
+  const dur = reduz ? 0 : (etapas[i].transicao||0);   // segundos; 0 = transição curta
+  palco.classList.add('some'); if(dur) palco.classList.add('lento');
+  (etapas[i].glitches||[]).forEach(t=>setTimeout(()=>{ document.body.classList.add('gl'); setTimeout(()=>document.body.classList.remove('gl'),240); },t*1000));
+  fundoDe(prox.entidade, dur);                         // o fundo da próxima entidade já começa a entrar
+  setTimeout(()=>{ mostra(i+1); console.log(respostas); }, dur ? dur*700 : 1300);
+}
+addEventListener('keydown',ev=>{ // seta → ou Enter também seguem
+  if(ev.key==='ArrowRight'||ev.key==='Enter'){ const b=document.querySelector('.seguir.vivo'); if(b) b.click(); }
+});
+setTimeout(()=>mostra(0),600);
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const app = initializeApp({
+  apiKey: "AIzaSyCUGJw0FlMVM4OY-bKbqecOoO3Y3xKquCM",
+  authDomain: "formvazioeva.firebaseapp.com",
+  projectId: "formvazioeva",
+  storageBucket: "formvazioeva.firebasestorage.app",
+  messagingSenderId: "520670402812",
+  appId: "1:520670402812:web:16c18aed586bbe9adb9f79"
+});
+const db = getFirestore(app);
+const sessao = Date.now().toString(36) + Math.random().toString(36).slice(2,8);   // agrupa as respostas de uma mesma pessoa
+// Uma resposta = um documento em "respostas". Tenta 3 vezes se a internet falhar.
+window.salvarResposta = async (chave, valor, nome, ordem) => {
+  const dados = { sessao, nome: String(nome||valor).slice(0,80), chave, valor: String(valor).slice(0,900), ordem, ts: serverTimestamp() };
+  for (let t=0; t<3; t++){
+    try { await addDoc(collection(db,'respostas'), dados); return; }
+    catch(e){ console.warn('falha ao salvar', e); await new Promise(r=>setTimeout(r,2500)); }
+  }
+};
+</script>
+</body>
+</html>
